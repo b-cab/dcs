@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PrototypeItemObject.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "PrototypeCharacter.generated.h"
@@ -30,12 +31,7 @@ class APrototypeCharacter : public ACharacter
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
-
-	/**
-	 * @brief Current Trace Item
-	 */
-	AActor* TraceItem;
-
+	
 protected:
 
 	/** Jump Input Action */
@@ -57,6 +53,14 @@ protected:
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, Category ="Input")
 	UInputAction* InteractAction;
+
+	/** Simple Item Holder */
+	UPROPERTY(VisibleInstanceOnly, Category="Items")
+	APrototypeItemObject* PocketItem;
+
+	/** Current Traced Item */
+	UPROPERTY(VisibleInstanceOnly, Category="Interaction")
+	AActor* TraceItem;
 	
 public:
 	APrototypeCharacter();
@@ -92,6 +96,10 @@ protected:
 	/** Handles interaction trace */
 	UFUNCTION(BlueprintCallable, Category="Interaction")
 	void InteractionTrace();
+
+	UFUNCTION(BlueprintCallable, Category="Items")
+	void PickUpItem(APrototypeItemObject* Item);
+	
 protected:
 
 	/** Set up input action bindings */
@@ -104,8 +112,8 @@ public:
 
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
-	// Process HitResult
-	UObject* GetTraceItem() const { return TraceItem; }
+	
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	APrototypeItemObject* GetPocketItem() const { return PocketItem; }
 };
 

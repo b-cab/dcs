@@ -10,7 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Public/Prototype.h"
-#include "Public/PrototypeInteractable.h"
+#include "Public/Interfaces/PrototypeInteractable.h"
 
 APrototypeCharacter::APrototypeCharacter()
 {
@@ -130,7 +130,7 @@ void APrototypeCharacter::DoInteraction()
 {
 	if(TraceItem && TraceItem->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
 	{
-		IInteractable::Execute_Interact(TraceItem);
+		IInteractable::Execute_Interact(TraceItem, this);
 	}
 }
 
@@ -140,7 +140,7 @@ void APrototypeCharacter::InteractionTrace()
 	FVector ForwardVector = GetFirstPersonCameraComponent()->GetForwardVector();
 	float TraceDistance = 1500.0f;
 	FVector EndLocation = StartLocation + (ForwardVector * TraceDistance);
-	float SphereRadius = 3.0f;
+	float SphereRadius = 50.0f;
 	auto Channel = UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility);
 
 	FHitResult HitResult;
@@ -179,4 +179,9 @@ void APrototypeCharacter::InteractionTrace()
 			}
 		}
 	}
+}
+
+void APrototypeCharacter::PickUpItem(APrototypeItemObject* Item)
+{
+	PocketItem = Item;
 }
