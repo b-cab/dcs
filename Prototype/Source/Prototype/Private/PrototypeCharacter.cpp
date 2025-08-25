@@ -10,7 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Public/Prototype.h"
-#include "Public/PrototypeInteractable.h"
+#include "Public/Interfaces/PrototypeInteractable.h"
 
 APrototypeCharacter::APrototypeCharacter()
 {
@@ -130,7 +130,7 @@ void APrototypeCharacter::DoInteraction()
 {
 	if(TraceItem && TraceItem->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
 	{
-		IInteractable::Execute_Interact(TraceItem);
+		IInteractable::Execute_Interact(TraceItem, this);
 	}
 }
 
@@ -138,7 +138,7 @@ void APrototypeCharacter::InteractionTrace()
 {
 	FVector StartLocation = GetFirstPersonCameraComponent()->GetComponentLocation();
 	FVector ForwardVector = GetFirstPersonCameraComponent()->GetForwardVector();
-	float TraceDistance = 1500.0f;
+	float TraceDistance = 1000.0f;
 	FVector EndLocation = StartLocation + (ForwardVector * TraceDistance);
 	float SphereRadius = 3.0f;
 	auto Channel = UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility);
@@ -155,7 +155,7 @@ void APrototypeCharacter::InteractionTrace()
 		Channel, 
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration, // Visualize for debugging
+		EDrawDebugTrace::None, // Visualize for debugging
 		HitResult,
 		true // Ignore Self
 	);
@@ -167,16 +167,21 @@ void APrototypeCharacter::InteractionTrace()
 			if(HitResult.GetActor() != TraceItem)
 			{
 				TraceItem = HitResult.GetActor();
-				IInteractable::Execute_CanBeInteract(TraceItem, true);
+				IInteractable::Execute_CanBeInteract(TraceItem, this, true);
 			}
 		}
 		else
 		{
 			if(TraceItem)
 			{
-				IInteractable::Execute_CanBeInteract(TraceItem, false);
+				IInteractable::Execute_CanBeInteract(TraceItem, this, false);
 				TraceItem = nullptr;
 			}
 		}
 	}
+}
+
+void APrototypeCharacter::PickUpItem(APrototypeItemObject* Item)
+{
+	HasPocketItem = Item ? true : false;
 }
