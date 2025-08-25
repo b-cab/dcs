@@ -55,8 +55,8 @@ protected:
 	UInputAction* InteractAction;
 
 	/** Simple Item Holder */
-	UPROPERTY(VisibleInstanceOnly, Category="Items")
-	APrototypeItemObject* PocketItem;
+	UPROPERTY(BlueprintReadWrite, Category="Items")
+	bool HasPocketItem = false;
 
 	/** Current Traced Item */
 	UPROPERTY(VisibleInstanceOnly, Category="Interaction")
@@ -112,8 +112,5 @@ public:
 
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-	
-	UFUNCTION(BlueprintCallable, Category="Inventory")
-	APrototypeItemObject* GetPocketItem() const { return PocketItem; }
 };
 

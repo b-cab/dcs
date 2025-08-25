@@ -138,9 +138,9 @@ void APrototypeCharacter::InteractionTrace()
 {
 	FVector StartLocation = GetFirstPersonCameraComponent()->GetComponentLocation();
 	FVector ForwardVector = GetFirstPersonCameraComponent()->GetForwardVector();
-	float TraceDistance = 1500.0f;
+	float TraceDistance = 1000.0f;
 	FVector EndLocation = StartLocation + (ForwardVector * TraceDistance);
-	float SphereRadius = 50.0f;
+	float SphereRadius = 3.0f;
 	auto Channel = UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility);
 
 	FHitResult HitResult;
@@ -155,7 +155,7 @@ void APrototypeCharacter::InteractionTrace()
 		Channel, 
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration, // Visualize for debugging
+		EDrawDebugTrace::None, // Visualize for debugging
 		HitResult,
 		true // Ignore Self
 	);
@@ -167,14 +167,14 @@ void APrototypeCharacter::InteractionTrace()
 			if(HitResult.GetActor() != TraceItem)
 			{
 				TraceItem = HitResult.GetActor();
-				IInteractable::Execute_CanBeInteract(TraceItem, true);
+				IInteractable::Execute_CanBeInteract(TraceItem, this, true);
 			}
 		}
 		else
 		{
 			if(TraceItem)
 			{
-				IInteractable::Execute_CanBeInteract(TraceItem, false);
+				IInteractable::Execute_CanBeInteract(TraceItem, this, false);
 				TraceItem = nullptr;
 			}
 		}
@@ -183,5 +183,5 @@ void APrototypeCharacter::InteractionTrace()
 
 void APrototypeCharacter::PickUpItem(APrototypeItemObject* Item)
 {
-	PocketItem = Item;
+	HasPocketItem = Item ? true : false;
 }

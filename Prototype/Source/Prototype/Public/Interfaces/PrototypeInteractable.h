@@ -26,5 +26,5 @@ public:
 	void Interact(AActor* InteractSource);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction")
-	void CanBeInteract(bool CanBeInteracted);
+	void CanBeInteract(AActor* InteractSource, bool CanBeInteracted);
 };
